@@ -1,6 +1,7 @@
 # 人力资源管理系统
 系统功能结构：
-
+![image](https://github.com/Starix610/hr-system/blob/master/readme_images/structure-chart1.png)
+![image](https://github.com/Starix610/hr-system/blob/master/readme_images/structure-chart2.png)
 
 技术栈：
 + Spring+SpringMVC+Mybatis+JSP
