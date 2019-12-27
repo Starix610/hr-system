@@ -9,3 +9,5 @@
 + 前端：Bootstrap+Jquery+CSS
 
 预览：
+![image](https://github.com/Starix610/hr-system/blob/master/readme_images/chrome_J7F0oHOdoR.png)
+![image](https://github.com/Starix610/hr-system/blob/master/readme_images/chrome_EEZJ1hvYBL.png)
