@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hrsystem.mapper.PositionCategoryMapper">
+  <resultMap id="BaseResultMap" type="com.hrsystem.pojo.PositionCategory">
+    <id column="position_category_id" jdbcType="INTEGER" property="positionCategoryId" />
+    <result column="position_category_name" jdbcType="VARCHAR" property="positionCategoryName" />
+  </resultMap>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select position_category_id, position_category_name from position_category
+  </select>
+</mapper>

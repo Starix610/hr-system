@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hrsystem.mapper.OrganizationMapper">
+  <resultMap id="BaseResultMap" type="com.hrsystem.pojo.Organization">
+    <id column="organization_id" jdbcType="INTEGER" property="organizationId" />
+    <result column="organization_name" jdbcType="VARCHAR" property="organizationName" />
+    <result column="organization_level" jdbcType="INTEGER" property="organizationLevel" />
+    <result column="parent_organization_id" jdbcType="INTEGER" property="parentOrganizationId" />
+  </resultMap>
+  <select id="getListByParentId" parameterType="Integer" resultMap="BaseResultMap">
+    select * from organization where parent_organization_id = #{parentId}
+  </select>
+  <select id="getListByLevel" parameterType="Integer" resultMap="BaseResultMap">
+    select * from organization where organization_level = #{level}
+  </select>
+  <select id="getOrgNameById" parameterType="Integer" resultType="String">
+    select organization_name from organization where organization_id = #{id}
+  </select>
+
+</mapper>

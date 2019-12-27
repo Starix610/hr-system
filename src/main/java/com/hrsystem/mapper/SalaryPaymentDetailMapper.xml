@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hrsystem.mapper.SalaryPaymentDetailMapper">
+  <resultMap id="BaseResultMap" type="com.hrsystem.pojo.SalaryPaymentDetail">
+    <id column="salary_payment_detail_id" jdbcType="VARCHAR" property="salaryPaymentDetailId" />
+    <result column="record_id" jdbcType="VARCHAR" property="recordId" />
+    <result column="staff_name" jdbcType="VARCHAR" property="staffName" />
+    <result column="base_salary" jdbcType="DECIMAL" property="baseSalary" />
+    <result column="travel_allowance" jdbcType="DECIMAL" property="travelAllowance" />
+    <result column="lunch_allowance" jdbcType="DECIMAL" property="lunchAllowance" />
+    <result column="communication_allowance" jdbcType="DECIMAL" property="communicationAllowance" />
+    <result column="endowment_insurance" jdbcType="DECIMAL" property="endowmentInsurance" />
+    <result column="medical_insurance" jdbcType="DECIMAL" property="medicalInsurance" />
+    <result column="unemployment_insurance" jdbcType="DECIMAL" property="unemploymentInsurance" />
+    <result column="housing_fund" jdbcType="DECIMAL" property="housingFund" />
+    <result column="bonus" jdbcType="DECIMAL" property="bonus" />
+    <result column="deduction_bonus" jdbcType="DECIMAL" property="deductionBonus" />
+    <result column="salary_payment_id" jdbcType="VARCHAR" property="salaryPaymentId" />
+  </resultMap>
+  <insert id="insert" parameterType="com.hrsystem.pojo.SalaryPaymentDetail">
+    insert into salary_payment_detail (salary_payment_detail_id, record_id, 
+      staff_name, base_salary, travel_allowance, 
+      lunch_allowance, communication_allowance, 
+      endowment_insurance, medical_insurance, unemployment_insurance, 
+      housing_fund, bonus, deduction_bonus, 
+      salary_payment_id)
+    values (#{salaryPaymentDetailId,jdbcType=VARCHAR}, #{recordId,jdbcType=VARCHAR}, 
+      #{staffName,jdbcType=VARCHAR}, #{baseSalary,jdbcType=DECIMAL}, #{travelAllowance,jdbcType=DECIMAL}, 
+      #{lunchAllowance,jdbcType=DECIMAL}, #{communicationAllowance,jdbcType=DECIMAL}, 
+      #{endowmentInsurance,jdbcType=DECIMAL}, #{medicalInsurance,jdbcType=DECIMAL}, #{unemploymentInsurance,jdbcType=DECIMAL}, 
+      #{housingFund,jdbcType=DECIMAL}, #{bonus,jdbcType=DECIMAL}, #{deductionBonus,jdbcType=DECIMAL}, 
+      #{salaryPaymentId,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.hrsystem.pojo.SalaryPaymentDetail">
+    update salary_payment_detail
+    set record_id = #{recordId,jdbcType=VARCHAR},
+      staff_name = #{staffName,jdbcType=VARCHAR},
+      base_salary = #{baseSalary,jdbcType=DECIMAL},
+      travel_allowance = #{travelAllowance,jdbcType=DECIMAL},
+      lunch_allowance = #{lunchAllowance,jdbcType=DECIMAL},
+      communication_allowance = #{communicationAllowance,jdbcType=DECIMAL},
+      endowment_insurance = #{endowmentInsurance,jdbcType=DECIMAL},
+      medical_insurance = #{medicalInsurance,jdbcType=DECIMAL},
+      unemployment_insurance = #{unemploymentInsurance,jdbcType=DECIMAL},
+      housing_fund = #{housingFund,jdbcType=DECIMAL},
+      bonus = #{bonus,jdbcType=DECIMAL},
+      deduction_bonus = #{deductionBonus,jdbcType=DECIMAL},
+      salary_payment_id = #{salaryPaymentId,jdbcType=VARCHAR}
+    where salary_payment_detail_id = #{salaryPaymentDetailId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectPaymentDetailListByOrgId" resultMap="BaseResultMap">
+    select record_id, staff_name, base_salary, travel_allowance,
+    lunch_allowance, communication_allowance, endowment_insurance, medical_insurance,
+    unemployment_insurance, housing_fund
+    from staff_record sr
+    inner join salary_standard ss
+    on sr.salary_standard_id = ss.salary_standard_id
+    where organization_1_id=#{orgId1} and organization_2_id=#{orgId2} and organization_3_id=#{orgId3} and sr.status = 1
+  </select>
+  <select id="selectByPaymentId" parameterType="String" resultMap="BaseResultMap">
+    select * from salary_payment_detail where salary_payment_id = #{paymentId}
+  </select>
+</mapper>

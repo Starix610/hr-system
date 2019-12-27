@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hrsystem.mapper.SalaryStandardMapper">
+  <resultMap id="BaseResultMap" type="com.hrsystem.pojo.SalaryStandard">
+    <id column="salary_standard_id" jdbcType="VARCHAR" property="salaryStandardId" />
+    <result column="salary_standard_name" jdbcType="VARCHAR" property="salaryStandardName" />
+    <result column="creator" jdbcType="VARCHAR" property="creator" />
+    <result column="registrant" jdbcType="VARCHAR" property="registrant" />
+    <result column="register_time" jdbcType="TIMESTAMP" property="registerTime" />
+    <result column="base_salary" jdbcType="DECIMAL" property="baseSalary" />
+    <result column="travel_allowance" jdbcType="DECIMAL" property="travelAllowance" />
+    <result column="lunch_allowance" jdbcType="DECIMAL" property="lunchAllowance" />
+    <result column="communication_allowance" jdbcType="DECIMAL" property="communicationAllowance" />
+    <result column="endowment_insurance" jdbcType="DECIMAL" property="endowmentInsurance" />
+    <result column="medical_insurance" jdbcType="DECIMAL" property="medicalInsurance" />
+    <result column="unemployment_insurance" jdbcType="DECIMAL" property="unemploymentInsurance" />
+    <result column="housing_fund" jdbcType="DECIMAL" property="housingFund" />
+    <result column="total_salary" jdbcType="DECIMAL" property="totalSalary" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="recheck_name" jdbcType="VARCHAR" property="recheckName" />
+    <result column="recheck_time" jdbcType="TIMESTAMP" property="recheckTime" />
+    <result column="update_name" jdbcType="VARCHAR" property="updateName" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="audit_opinion" jdbcType="LONGVARCHAR" property="auditOpinion" />
+  </resultMap>
+  <insert id="insert" parameterType="com.hrsystem.pojo.SalaryStandard">
+    insert into salary_standard (salary_standard_id, salary_standard_name, 
+      creator, registrant, register_time, 
+      base_salary, travel_allowance, lunch_allowance, 
+      communication_allowance, endowment_insurance, 
+      medical_insurance, unemployment_insurance, 
+      housing_fund, total_salary, status, 
+      recheck_name, recheck_time, update_name, 
+      update_time, audit_opinion)
+    values (#{salaryStandardId,jdbcType=VARCHAR}, #{salaryStandardName,jdbcType=VARCHAR}, 
+      #{creator,jdbcType=VARCHAR}, #{registrant,jdbcType=VARCHAR}, #{registerTime,jdbcType=TIMESTAMP}, 
+      #{baseSalary,jdbcType=DECIMAL}, #{travelAllowance,jdbcType=DECIMAL}, #{lunchAllowance,jdbcType=DECIMAL}, 
+      #{communicationAllowance,jdbcType=DECIMAL}, #{endowmentInsurance,jdbcType=DECIMAL}, 
+      #{medicalInsurance,jdbcType=DECIMAL}, #{unemploymentInsurance,jdbcType=DECIMAL}, 
+      #{housingFund,jdbcType=DECIMAL}, #{totalSalary,jdbcType=DECIMAL}, #{status,jdbcType=INTEGER}, 
+      #{recheckName,jdbcType=VARCHAR}, #{recheckTime,jdbcType=TIMESTAMP}, #{updateName,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{auditOpinion,jdbcType=LONGVARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.hrsystem.pojo.SalaryStandard">
+    update salary_standard
+    set salary_standard_name = #{salaryStandardName,jdbcType=VARCHAR},
+      creator = #{creator,jdbcType=VARCHAR},
+      registrant = #{registrant,jdbcType=VARCHAR},
+      register_time = #{registerTime,jdbcType=TIMESTAMP},
+      base_salary = #{baseSalary,jdbcType=DECIMAL},
+      travel_allowance = #{travelAllowance,jdbcType=DECIMAL},
+      lunch_allowance = #{lunchAllowance,jdbcType=DECIMAL},
+      communication_allowance = #{communicationAllowance,jdbcType=DECIMAL},
+      endowment_insurance = #{endowmentInsurance,jdbcType=DECIMAL},
+      medical_insurance = #{medicalInsurance,jdbcType=DECIMAL},
+      unemployment_insurance = #{unemploymentInsurance,jdbcType=DECIMAL},
+      housing_fund = #{housingFund,jdbcType=DECIMAL},
+      total_salary = #{totalSalary,jdbcType=DECIMAL},
+      status = #{status,jdbcType=INTEGER},
+      recheck_name = #{recheckName,jdbcType=VARCHAR},
+      recheck_time = #{recheckTime,jdbcType=TIMESTAMP},
+      update_name = #{updateName,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      audit_opinion = #{auditOpinion,jdbcType=LONGVARCHAR}
+    where salary_standard_id = #{salaryStandardId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select salary_standard_id, salary_standard_name, creator, registrant, register_time, 
+    base_salary, travel_allowance, lunch_allowance, communication_allowance, endowment_insurance, 
+    medical_insurance, unemployment_insurance, housing_fund, total_salary, status, recheck_name, 
+    recheck_time, update_name, update_time, audit_opinion
+    from salary_standard
+    where salary_standard_id = #{salaryStandardId,jdbcType=VARCHAR}
+  </select>
+  <select id="getRecheckCount" parameterType="Integer" resultType="Integer">
+    select count(1) from salary_standard where status = #{status}
+  </select>
+  <select id="selectByCondition" parameterType="com.hrsystem.pojo.SalaryStandardQueryCondition" resultMap="BaseResultMap">
+    select salary_standard_id,salary_standard_name,creator,registrant,register_time,recheck_name,update_name,total_salary from salary_standard
+    <where>
+      <if test="salaryStandardId != null">
+        salary_standard_id like '%${salaryStandardId}%'
+      </if>
+      <if test="keyword!=null">
+        and (salary_standard_name like '%${keyword}%'
+        or creator like '%${keyword}%'
+        or registrant like '%${keyword}%'
+        or recheck_name like '%${keyword}%'
+        or update_name like '%${keyword}%')
+      </if>
+      <if test="startTime!=null and endTime==null">
+        and DATE_FORMAT(register_time,'%Y-%m-%d') &gt;= #{startTime}
+      </if>
+      <if test="startTime==null and endTime!=null">
+        and DATE_FORMAT(register_time,'%Y-%m-%d') &lt;= #{endTime}
+      </if>
+      <if test="startTime!=null and endTime!=null">
+        and DATE_FORMAT(register_time,'%Y-%m-%d') between #{startTime} and  #{endTime}
+      </if>
+      <if test="status!=null">
+        and status = #{status}
+      </if>
+      and status != 0
+    </where>
+  </select>
+  <update id="updateSalaryStandard" parameterType="com.hrsystem.pojo.SalaryStandard">
+    update salary_standard
+    set salary_standard_name = #{salaryStandardName,jdbcType=VARCHAR},
+      creator = #{creator,jdbcType=VARCHAR},
+      registrant = #{registrant,jdbcType=VARCHAR},
+      base_salary = #{baseSalary,jdbcType=DECIMAL},
+      travel_allowance = #{travelAllowance,jdbcType=DECIMAL},
+      lunch_allowance = #{lunchAllowance,jdbcType=DECIMAL},
+      communication_allowance = #{communicationAllowance,jdbcType=DECIMAL},
+      endowment_insurance = #{endowmentInsurance,jdbcType=DECIMAL},
+      medical_insurance = #{medicalInsurance,jdbcType=DECIMAL},
+      unemployment_insurance = #{unemploymentInsurance,jdbcType=DECIMAL},
+      housing_fund = #{housingFund,jdbcType=DECIMAL},
+      total_salary = #{totalSalary,jdbcType=DECIMAL},
+      status = #{status,jdbcType=INTEGER},
+      recheck_name = #{recheckName,jdbcType=VARCHAR},
+      recheck_time = #{recheckTime,jdbcType=TIMESTAMP},
+      audit_opinion = #{auditOpinion,jdbcType=LONGVARCHAR}
+    where salary_standard_id = #{salaryStandardId,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

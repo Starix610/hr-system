@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+
+
+    <!-- 设置页面不登陆也可以访问 -->
+    <security:http pattern="/css/**" security="none"></security:http>
+    <security:http pattern="/img/**" security="none"></security:http>
+    <security:http pattern="/js/**" security="none"></security:http>
+    <security:http pattern="/user/login" security="none"></security:http>
+    <security:http pattern="/upload/**" security="none"></security:http>
+
+       <!-- 页面的拦截规则    use-expressions:是否启动SPEL表达式 默认是true -->
+        <security:http use-expressions="true">
+        <!-- 相关的角色的访问权限，只有拥有相关角色才能访问指定的志愿 -->
+            <security:intercept-url pattern="/staffs/recheck/**" access="hasRole('ROLE_HR_manager')"/>
+            <security:intercept-url pattern="/staffs/querypage/record_delete" access="hasRole('ROLE_HR_manager')"/>
+            <security:intercept-url pattern="/options/record_register" access="hasRole('ROLE_HR_specialist')"/>
+            <security:intercept-url pattern="/staffs" access="hasRole('ROLE_HR_specialist')" method="POST"/><!--档案添加操作,POST请求-->
+            <security:intercept-url pattern="/staffs/querypage/record_update" access="hasRole('ROLE_HR_specialist')"/>
+            <security:intercept-url pattern="/staffs/*" access="hasRole('ROLE_HR_specialist')" method="POST"/> <!--/staffs/{id} POST请求是更新操作,设置权限,GET方式不限制-->
+            <security:intercept-url pattern="/staffs/delete/**" access="hasRole('ROLE_HR_manager')"/>
+            <security:intercept-url pattern="/staffs/**" access="hasRole('ROLE_HR_manager')or hasRole('ROLE_HR_specialist')"/>
+
+            <security:intercept-url pattern="/salary/standard/recheck/list" access="hasRole('ROLE_CB_manager')"/>
+            <security:intercept-url pattern="/salary/standard/recheck" access="hasRole('ROLE_CB_manager')"/>
+            <security:intercept-url pattern="/salary/payment/recheck/list" access="hasRole('ROLE_CB_manager')"/>
+            <security:intercept-url pattern="/salary/payment/recheck" access="hasRole('ROLE_CB_manager')"/>
+            <security:intercept-url pattern="/salary/**" access="hasRole('ROLE_CB_manager')or hasRole('ROLE_CB_specialist')"/>
+
+            <security:intercept-url pattern="/**" access="hasRole('ROLE_HR_specialist')or hasRole('ROLE_HR_manager')or hasRole('ROLE_CB_specialist')or hasRole('ROLE_CB_manager')"/>
+
+        <security:access-denied-handler error-page="/accessDenied"/>
+
+        <!-- 开启表单登陆功能 -->
+        <security:form-login login-page="/user/login" default-target-url="/" authentication-failure-handler-ref="myAuthenctiationFailureHandler"
+                                 always-use-default-target="true"/><!--always登录成功后跳转到第一次访问的页面还是默认页-->
+
+        <security:csrf disabled="true"/>  <!--关闭scrf-->
+
+        <security:headers>
+            <security:frame-options policy="SAMEORIGIN"/>  <!--支持页面的frame页-->
+        </security:headers>
+
+        <!--开启注销，默认地址/logout-->
+        <security:logout/>
+
+    </security:http>
+
+    <!--自定义的登录失败后的处理类(改变spring-security默认的处理类的部分属性，用来回显上一次输入的用户名)-->
+    <!--使用了authentication-failure-handler-ref来定义处理类之后，上面的authentication-failure-url和authentication-failure-forward-url的设置都将不起作用-->
+    <bean id="myAuthenctiationFailureHandler" class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
+        <!--使用转发，框架默认是重定向-->
+        <property name="useForward" value="true"/>
+        <!--重定向到自己的Controller中，通过request获取用户名并保存到session中在页面回显-->
+        <property name="defaultFailureUrl" value="/user/login"/>
+    </bean>
+
+
+    <!-- 认证类 -->
+    <bean id="userDetailService" class="com.hrsystem.service.impl.UserServiceDetailsImpl"></bean>
+    <!--加密算法类-->
+    <bean id="md5Encoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"/>
+
+    <!-- 认证管理器,这是最初的简单配置 -->
+    <security:authentication-manager>
+        <security:authentication-provider user-service-ref="userDetailService">
+            <security:password-encoder ref="md5Encoder"></security:password-encoder> <!-- 密码使用MD5加密-->
+        </security:authentication-provider>
+    </security:authentication-manager>
+
+    <!--自定义spring-security的登陆错误信息(自定义的message_zh_CN.properties文件)-->
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="basenames" value="classpath:config/message_zh_CN"></property>
+    </bean>
+
+
+    <!--认证管理器另一种配置-->
+    <!--<security:authentication-manager>-->
+        <!--<security:authentication-provider ref="authenticationProvider"></security:authentication-provider>-->
+    <!--</security:authentication-manager>-->
+
+    <!--&lt;!&ndash;DaoAuthenticationProvider是authentication-provider默认使用的类，在此做一些配置修改&ndash;&gt;-->
+    <!--<bean id="authenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">-->
+        <!--<property name="userDetailsService" ref="userDetailService"/>-->
+        <!--&lt;!&ndash;显示登录错误信息&ndash;&gt;-->
+        <!--<property name="hideUserNotFoundExceptions" value="true"/>-->
+        <!--&lt;!&ndash;密码加密策略&ndash;&gt;-->
+        <!--<property name="passwordEncoder" ref="md5Encoder"/>-->
+    <!--</bean>-->
+
+
+</beans>

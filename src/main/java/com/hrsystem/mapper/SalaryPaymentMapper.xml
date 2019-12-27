@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hrsystem.mapper.SalaryPaymentMapper">
+  <resultMap id="BaseResultMap" type="com.hrsystem.pojo.SalaryPayment">
+    <id column="salary_payment_id" jdbcType="VARCHAR" property="salaryPaymentId" />
+    <result column="organization_1_id" jdbcType="INTEGER" property="organization1Id" />
+    <result column="organization_2_id" jdbcType="INTEGER" property="organization2Id" />
+    <result column="organization_3_id" jdbcType="INTEGER" property="organization3Id" />
+    <result column="number_of_staff" jdbcType="INTEGER" property="numberOfStaff" />
+    <result column="total_base_salary" jdbcType="DECIMAL" property="totalBaseSalary" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="registrant" jdbcType="VARCHAR" property="registrant" />
+    <result column="register_time" jdbcType="TIMESTAMP" property="registerTime" />
+    <result column="recheck_name" jdbcType="VARCHAR" property="recheckName" />
+    <result column="recheck_time" jdbcType="TIMESTAMP" property="recheckTime" />
+    <result column="real_pay" jdbcType="DECIMAL" property="realPay" />
+  </resultMap>
+  <insert id="insert" parameterType="com.hrsystem.pojo.SalaryPayment">
+    insert into salary_payment (salary_payment_id, organization_1_id, 
+      organization_2_id, organization_3_id, number_of_staff, 
+      total_base_salary, status, registrant, 
+      register_time, recheck_name, recheck_time, 
+      real_pay)
+    values (#{salaryPaymentId,jdbcType=VARCHAR}, #{organization1Id,jdbcType=INTEGER}, 
+      #{organization2Id,jdbcType=INTEGER}, #{organization3Id,jdbcType=INTEGER}, #{numberOfStaff,jdbcType=INTEGER}, 
+      #{totalBaseSalary,jdbcType=DECIMAL}, #{status,jdbcType=INTEGER}, #{registrant,jdbcType=VARCHAR}, 
+      #{registerTime,jdbcType=TIMESTAMP}, #{recheckName,jdbcType=VARCHAR}, #{recheckTime,jdbcType=TIMESTAMP}, 
+      #{realPay,jdbcType=DECIMAL})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.hrsystem.pojo.SalaryPayment">
+    update salary_payment
+    set organization_1_id = #{organization1Id,jdbcType=INTEGER},
+      organization_2_id = #{organization2Id,jdbcType=INTEGER},
+      organization_3_id = #{organization3Id,jdbcType=INTEGER},
+      number_of_staff = #{numberOfStaff,jdbcType=INTEGER},
+      total_base_salary = #{totalBaseSalary,jdbcType=DECIMAL},
+      status = #{status,jdbcType=INTEGER},
+      registrant = #{registrant,jdbcType=VARCHAR},
+      register_time = #{registerTime,jdbcType=TIMESTAMP},
+      recheck_name = #{recheckName,jdbcType=VARCHAR},
+      recheck_time = #{recheckTime,jdbcType=TIMESTAMP},
+      real_pay = #{realPay,jdbcType=DECIMAL}
+    where salary_payment_id = #{salaryPaymentId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select salary_payment_id, organization_1_id, organization_2_id, organization_3_id, 
+    number_of_staff, total_base_salary, status, registrant, register_time, recheck_name, 
+    recheck_time, real_pay
+    from salary_payment
+    where salary_payment_id = #{salaryPaymentId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getRececkCount" parameterType="Integer" resultType="Integer">
+    select count(1) from salary_payment where status=#{status}
+  </select>
+
+  <!--获取待登记的薪酬单-->
+  <select id="selectNoRegisterList" resultMap="BaseResultMap">
+    select organization_1_id,organization_2_id,organization_3_id,count(*) as number_of_staff,sum(total_salary) as total_base_salary,2 as status
+    from staff_record as a,salary_standard
+    where
+    a.status=1
+    and a.salary_standard_id=salary_standard.salary_standard_id
+    and not exists (select * from salary_payment as b where a.organization_1_id=b.organization_1_id and a.organization_2_id = b.organization_2_id and a.organization_3_id = b.organization_3_id)
+    group by organization_1_id,organization_2_id,organization_3_id
+  </select>
+  <select id="selectSalaryPaymentByOrgId" resultMap="BaseResultMap">
+    select organization_1_id, organization_2_id, organization_3_id,count(*) as number_of_staff, sum(total_salary) as total_base_salary
+    from staff_record,salary_standard
+    where organization_1_id = #{orgId1} and organization_2_id = #{orgId2} and organization_3_id = #{orgId3}
+    and staff_record.salary_standard_id=salary_standard.salary_standard_id
+    and staff_record.status = 1
+    group by organization_1_id,organization_2_id,organization_3_id
+  </select>
+  <select id="selectRechceckList" parameterType="Integer" resultMap="BaseResultMap">
+    select * from salary_payment where status = #{status}
+  </select>
+
+  <update id="recheckUpdate" parameterType="com.hrsystem.pojo.SalaryPayment">
+    update salary_payment
+    set
+      status = #{status,jdbcType=INTEGER},
+      recheck_name = #{recheckName,jdbcType=VARCHAR},
+      recheck_time = #{recheckTime,jdbcType=TIMESTAMP},
+      real_pay = #{realPay,jdbcType=DECIMAL}
+    where salary_payment_id = #{salaryPaymentId,jdbcType=VARCHAR}
+  </update>
+
+  <select id="queryByCondition" parameterType="com.hrsystem.pojo.SalaryPaymentQueryCondition" resultMap="BaseResultMap">
+    select * from salary_payment
+    <where>
+      <if test="salaryPaymentId!=null ">
+        salary_payment_id like '%${salaryPaymentId}%'
+      </if>
+      <if test="keyword!=null">
+        and (registrant like '%${keyword}%'
+        or recheck_name like '%${keyword}%')
+      </if>
+      <if test="startTime!=null and endTime==null">
+        and DATE_FORMAT(recheck_time,'%Y-%m-%d') &gt;= #{startTime}
+      </if>
+      <if test="startTime==null and endTime!=null">
+        and DATE_FORMAT(recheck_time,'%Y-%m-%d') &lt;= #{endTime}
+      </if>
+      <if test="startTime!=null and endTime!=null">
+        and DATE_FORMAT(recheck_time,'%Y-%m-%d') between #{startTime} and  #{endTime}
+      </if>
+      and status = 1
+    </where>
+  </select>
+
+</mapper>

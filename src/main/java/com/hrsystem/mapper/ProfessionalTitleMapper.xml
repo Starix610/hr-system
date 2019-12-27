@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hrsystem.mapper.ProfessionalTitleMapper">
+  <resultMap id="BaseResultMap" type="com.hrsystem.pojo.ProfessionalTitle">
+    <id column="professional_title_id" jdbcType="INTEGER" property="professionalTitleId" />
+    <result column="professional_title_name" jdbcType="VARCHAR" property="professionalTitleName" />
+  </resultMap>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select professional_title_id, professional_title_name from professional_title
+  </select>
+</mapper>

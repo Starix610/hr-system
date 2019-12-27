@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hrsystem.mapper.MajorMapper">
+  <resultMap id="BaseResultMap" type="com.hrsystem.pojo.Major">
+    <id column="major_id" jdbcType="INTEGER" property="majorId" />
+    <result column="major_name" jdbcType="VARCHAR" property="majorName" />
+  </resultMap>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select major_id, major_name from major
+  </select>
+</mapper>

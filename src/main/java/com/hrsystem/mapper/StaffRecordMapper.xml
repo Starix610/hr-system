@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hrsystem.mapper.StaffRecordMapper">
+  <resultMap id="BaseResultMap" type="com.hrsystem.pojo.StaffRecord">
+    <id column="record_id" jdbcType="VARCHAR" property="recordId" />
+    <result column="organization_1_id" jdbcType="INTEGER" property="organization1Id" />
+    <result column="organization_2_id" jdbcType="INTEGER" property="organization2Id" />
+    <result column="organization_3_id" jdbcType="INTEGER" property="organization3Id" />
+    <result column="position_category_id" jdbcType="INTEGER" property="positionCategoryId" />
+    <result column="position_id" jdbcType="INTEGER" property="positionId" />
+    <result column="professional_title" jdbcType="VARCHAR" property="professionalTitle" />
+    <result column="staff_name" jdbcType="VARCHAR" property="staffName" />
+    <result column="sex" jdbcType="CHAR" property="sex" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="qq" jdbcType="VARCHAR" property="qq" />
+    <result column="mobilephone" jdbcType="VARCHAR" property="mobilephone" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="zip" jdbcType="VARCHAR" property="zip" />
+    <result column="nationality_id" jdbcType="INTEGER" property="nationalityId" />
+    <result column="birthplace" jdbcType="VARCHAR" property="birthplace" />
+    <result column="birthday" jdbcType="DATE" property="birthday" />
+    <result column="nation_id" jdbcType="INTEGER" property="nationId" />
+    <result column="faith" jdbcType="VARCHAR" property="faith" />
+    <result column="politics_status" jdbcType="VARCHAR" property="politicsStatus" />
+    <result column="id_card" jdbcType="VARCHAR" property="idCard" />
+    <result column="social_security_id" jdbcType="VARCHAR" property="socialSecurityId" />
+    <result column="age" jdbcType="INTEGER" property="age" />
+    <result column="education" jdbcType="VARCHAR" property="education" />
+    <result column="major_id" jdbcType="INTEGER" property="majorId" />
+    <result column="salary_standard_id" jdbcType="VARCHAR" property="salaryStandardId" />
+    <result column="bank" jdbcType="VARCHAR" property="bank" />
+    <result column="credit_card" jdbcType="VARCHAR" property="creditCard" />
+    <result column="speciality" jdbcType="VARCHAR" property="speciality" />
+    <result column="hobby" jdbcType="VARCHAR" property="hobby" />
+    <result column="registrant" jdbcType="VARCHAR" property="registrant" />
+    <result column="recheck_name" jdbcType="VARCHAR" property="recheckName" />
+    <result column="register_time" jdbcType="TIMESTAMP" property="registerTime" />
+    <result column="recheck_time" jdbcType="TIMESTAMP" property="recheckTime" />
+    <result column="photo_url" jdbcType="VARCHAR" property="photoUrl" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="update_name" jdbcType="VARCHAR" property="updateName" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="personal_resume" jdbcType="LONGVARCHAR" property="personalResume" />
+    <result column="family_relationship_information" jdbcType="LONGVARCHAR" property="familyRelationshipInformation" />
+    <result column="remark" jdbcType="LONGVARCHAR" property="remark" />
+  </resultMap>
+  <insert id="insert" parameterType="com.hrsystem.pojo.StaffRecord">
+    insert into staff_record (record_id, organization_1_id, organization_2_id, 
+      organization_3_id, position_category_id, position_id, 
+      professional_title, staff_name, sex, 
+      email, phone, qq, mobilephone, 
+      address, zip, nationality_id, 
+      birthplace, birthday, nation_id, 
+      faith, politics_status, id_card, 
+      social_security_id, age, education, 
+      major_id, salary_standard_id, bank, 
+      credit_card, speciality, hobby, 
+      registrant, recheck_name, register_time, 
+      recheck_time, photo_url, status, 
+      update_name, update_time, personal_resume, 
+      family_relationship_information, remark
+      )
+    values (#{recordId,jdbcType=VARCHAR}, #{organization1Id,jdbcType=INTEGER}, #{organization2Id,jdbcType=INTEGER}, 
+      #{organization3Id,jdbcType=INTEGER}, #{positionCategoryId,jdbcType=INTEGER}, #{positionId,jdbcType=INTEGER}, 
+      #{professionalTitle,jdbcType=VARCHAR}, #{staffName,jdbcType=VARCHAR}, #{sex,jdbcType=CHAR}, 
+      #{email,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{qq,jdbcType=VARCHAR}, #{mobilephone,jdbcType=VARCHAR}, 
+      #{address,jdbcType=VARCHAR}, #{zip,jdbcType=VARCHAR}, #{nationalityId,jdbcType=INTEGER}, 
+      #{birthplace,jdbcType=VARCHAR}, #{birthday,jdbcType=DATE}, #{nationId,jdbcType=INTEGER}, 
+      #{faith,jdbcType=VARCHAR}, #{politicsStatus,jdbcType=VARCHAR}, #{idCard,jdbcType=VARCHAR}, 
+      #{socialSecurityId,jdbcType=VARCHAR}, #{age,jdbcType=INTEGER}, #{education,jdbcType=VARCHAR}, 
+      #{majorId,jdbcType=INTEGER}, #{salaryStandardId,jdbcType=VARCHAR}, #{bank,jdbcType=VARCHAR}, 
+      #{creditCard,jdbcType=VARCHAR}, #{speciality,jdbcType=VARCHAR}, #{hobby,jdbcType=VARCHAR}, 
+      #{registrant,jdbcType=VARCHAR}, #{recheckName,jdbcType=VARCHAR}, #{registerTime,jdbcType=TIMESTAMP}, 
+      #{recheckTime,jdbcType=TIMESTAMP}, #{photoUrl,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
+      #{updateName,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{personalResume,jdbcType=LONGVARCHAR}, 
+      #{familyRelationshipInformation,jdbcType=LONGVARCHAR}, #{remark,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select * from staff_record
+    where record_id = #{recordId,jdbcType=VARCHAR}
+  </select>
+  <select id="getRecheckCount" parameterType="int" resultType="int">
+    select count(1) from staff_record where status = #{status}
+  </select>
+
+
+  <!-- 根据封装的条件Pojo对象查询 -->
+  <!-- 动态sql之if、where标签,where标签会去掉if条件前部分的and-->
+  <select id="queryStaffListByCondition" parameterType="com.hrsystem.pojo.RecordQueryCondition" resultMap="BaseResultMap">
+    select record_id,staff_name,sex,organization_1_id,organization_2_id,organization_3_id,position_id
+    from staff_record
+    <where>
+      <if test="organization1Id!=null">
+        organization_1_id = #{organization1Id}
+        and organization_2_id = #{organization2Id}
+        and organization_3_id = #{organization3Id}
+      </if>
+      <if test="positionId!=null ">
+        and position_id = #{positionId}
+      </if>
+      <if test="startTime!=null and endTime==null">
+        and DATE_FORMAT(register_time,'%Y-%m-%d') &gt;= #{startTime}
+      </if>
+      <if test="startTime==null and endTime!=null">
+        and DATE_FORMAT(register_time,'%Y-%m-%d') &lt;= #{endTime}
+      </if>
+      <if test="startTime!=null and endTime!=null">
+        and DATE_FORMAT(register_time,'%Y-%m-%d') between #{startTime} and #{endTime}
+      </if>
+      <if test="status!=null">
+        and status = #{status}
+      </if>
+      and status != 0  <!-- 不查删除状态的记录 -->
+    </where>
+</select>
+
+<update id="update">
+  update staff_record
+  set staff_name = #{staffName,jdbcType=VARCHAR},
+  sex = #{sex,jdbcType=CHAR},
+  email = #{email,jdbcType=VARCHAR},
+  phone = #{phone,jdbcType=VARCHAR},
+  qq = #{qq,jdbcType=VARCHAR},
+  mobilephone = #{mobilephone,jdbcType=VARCHAR},
+  address = #{address,jdbcType=VARCHAR},
+  zip = #{zip,jdbcType=VARCHAR},
+  nationality_id = #{nationalityId,jdbcType=INTEGER},
+  birthplace = #{birthplace,jdbcType=VARCHAR},
+  birthday = #{birthday,jdbcType=DATE},
+  nation_id = #{nationId,jdbcType=INTEGER},
+  faith = #{faith,jdbcType=VARCHAR},
+  politics_status = #{politicsStatus,jdbcType=VARCHAR},
+  id_card = #{idCard,jdbcType=VARCHAR},
+  social_security_id = #{socialSecurityId,jdbcType=VARCHAR},
+  age = #{age,jdbcType=INTEGER},
+  education = #{education,jdbcType=VARCHAR},
+  major_id = #{majorId,jdbcType=INTEGER},
+  salary_standard_id = #{salaryStandardId,jdbcType=VARCHAR},
+  bank = #{bank,jdbcType=VARCHAR},
+  credit_card = #{creditCard,jdbcType=VARCHAR},
+  speciality = #{speciality,jdbcType=VARCHAR},
+  hobby = #{hobby,jdbcType=VARCHAR},
+  <if test="recheckName!=null ">
+    recheck_name = #{recheckName,jdbcType=VARCHAR},
+    recheck_time = #{recheckTime,jdbcType=TIMESTAMP},
+  </if>
+  <if test="updateName!=null ">
+    update_name = #{updateName,jdbcType=VARCHAR},
+    update_time = #{updateTime,jdbcType=TIMESTAMP},
+  </if>
+  professional_title = #{professionalTitle,jdbcType=VARCHAR},
+  photo_url = #{photoUrl,jdbcType=VARCHAR},
+  status = #{status,jdbcType=INTEGER},
+  personal_resume = #{personalResume,jdbcType=LONGVARCHAR},
+  family_relationship_information = #{familyRelationshipInformation,jdbcType=LONGVARCHAR},
+  remark = #{remark,jdbcType=LONGVARCHAR}
+  where record_id = #{recordId,jdbcType=VARCHAR}
+</update>
+<update id="updateStatusToDeleted">
+  update staff_record set status = #{status} where record_id = #{record_id}
+</update>
+</mapper>

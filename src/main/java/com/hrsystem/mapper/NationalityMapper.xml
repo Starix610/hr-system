@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hrsystem.mapper.NationalityMapper">
+  <resultMap id="BaseResultMap" type="com.hrsystem.pojo.Nationality">
+    <id column="nationality_id" jdbcType="INTEGER" property="nationalityId" />
+    <result column="nationality_name" jdbcType="VARCHAR" property="nationalityName" />
+  </resultMap>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select nationality_id, nationality_name from hr_system.nationality
+  </select>
+</mapper>
